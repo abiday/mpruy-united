@@ -134,28 +134,35 @@ graph TD
 ### Penjelasan Alur
 
 1. **Inisiasi Permintaan (HTTP Request)**
-   Client (browser) mengirimkan request ke server.
+   Client (browser) mengirimkan request ke server, melalui browser web akan dikirim sebuah HTTP Request ke server untuk mengakses sebuah URL tertentu.
+   
+   Contoh: Pengguna mengetik https://abid-dayyan-mpruy-united.pbp.cs.ui.ac.id/items/ di browser dan menekan Enter.
+
 
 2. **Resolusi URL (urls.py)**
    Dispatcher mencocokkan URL ke fungsi view. Jika cocok → jalankan view. Jika tidak → error 404.
+
+   Contoh: Dalam urls.py, Django menemukan pola path('items/', views.show_items, name='show_items'). Karena cocok, Django akan memanggil fungsi bernama show_items yang ada di dalam views.py.
+
 
 3. **Eksekusi Proses Bisnis (views.py)**
    View memproses data, interaksi model, dan menentukan response.
 
 4. **Interaksi Data (models.py)**
-   View memanggil model → ORM → query SQL → database.
+   Jika view memerlukan akses ke database, maka view memanggil model → ORM → query SQL → database. Yang nantinya akan digunakan untuk mengambil atau memanipulasi data.
 
 5. **Render Tampilan (Templates)**
-   Data dari view dikirim ke template, lalu di-render.
+   Data dari view dikirim ke template, view akan memuat file Template (.html) lalu di-render.
 
 6. **Pengiriman Respons (HTTP Response)**
-   Template yang sudah jadi dikirim balik ke client untuk ditampilkan.
+   Template yang sudah jadi kemudian dibungkus dalam sebuah objek HTTP Response, lalu dikirim balik ke client untuk ditampilkan. 
 
 ---
 
 ## 3. Peran settings.py dalam Proyek Django
 
-File **settings.py** adalah pusat konfigurasi.
+File **settings.py** adalah pusat konfigurasi sebagai fondasi utama untuk proyek Django. Memiliki isi, semua pengaturan yang menentukan bagaimana proyek akan beroperasi.
+
 
 * **INSTALLED\_APPS** → daftar aplikasi aktif
 * **DATABASES** → konfigurasi koneksi database
@@ -173,17 +180,11 @@ File **settings.py** adalah pusat konfigurasi.
 
 ## 5. Mengapa Django Cocok untuk Pemula?
 
-* Paket lengkap (ORM, template, admin, dll.)
-* Struktur jelas → kode tidak berantakan
-* Bisa kelola database dengan Python tanpa SQL manual
-* Dokumentasi lengkap, dipakai perusahaan besar
+Menurut saya, Django sangat cocok untuk pemula karena membuat proses belajar lebih mudah. Django seperti memberikan satu paket lengkap berisi semua yang dibutuhkan. Selain itu, Django memberikan peta yang jelas tentang di mana harus meletakkan kode agar tidak berantakan, dan saya bisa mengelola basis data hanya dengan Python tanpa perlu menulis kode SQL. Ditambah lagi, Django punya dokumentasi yang lengkap dan digunakan oleh banyak perusahaan besar, yang nantinya akan elevan dan bermanfaat untuk persiapan karier di masa depan.
 
 ---
 
 ## 6. Feedback untuk Asisten Dosen
 
-Sejauh ini tidak ada, guide dan ajaran dari asdos sudah baik dan cukup. Keterbukaan untuk berdiskusi juga membantu sekali, terutama karena saya masih awam dengan materi ini.
+Sejauh ini tidak ada, guide dan ajaran dari asdos sudah baik dan sangat cukup untuk pemahaman dan implementasi materi-materi saat ini. Keterbukaannya untuk berdiskusi jika mengalami kebingungan atau kurang paham pada suatu materi atau tugas juga saya apresiasi, yang mana dapat membantu sekali terutama pada mata kuliah ini di mana saya masih sangat awam.
 
----
-
-Apakah mau saya langsung buatkan file `README.md` dan kirimkan agar bisa Anda unduh?
