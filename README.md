@@ -1,3 +1,6 @@
+Repo: https://github.com/abiday/mpruy-united
+Web: https://abid-dayyan-mpruyunited.pbp.cs.ui.ac.id/
+
 ## Implementasi Checklist
 
 ### 1. Persiapan Proyek dan Lingkungan
