@@ -191,3 +191,80 @@ Menurut saya, Django sangat cocok untuk pemula karena membuat proses belajar leb
 
 Sejauh ini tidak ada, guide dan ajaran dari asdos sudah baik dan sangat cukup untuk pemahaman dan implementasi materi-materi saat ini. Keterbukaannya untuk berdiskusi jika mengalami kebingungan atau kurang paham pada suatu materi atau tugas juga saya apresiasi, yang mana dapat membantu sekali terutama pada mata kuliah ini di mana saya masih sangat awam.
 
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## 1. Jelaskan mengapa kita memerlukan data delivery dalam pengimplementasian sebuah platform?
+
+Secara sederhana, data delivery adalah backbone untuk berbagai bagian platform berkomunikasi satu sama lain. Seperti dapur adalah backend (tempat data diolah) dan meja pelanggan adalah frontend (tempat data ditampilkan). Data delivery adalah peran pelayan yang mengantarkan pesanan dari pelanggan ke dapur dan menyajikan makanan dari dapur ke pelanggan.
+
+Kita memerlukannya karena:
+
+1. Menghubungkan Backend dan Frontend untuk mengirimkan data dari server (logika) ke antarmuka pengguna (tampilan).
+2. Agar berbagai layanan atau aplikasi yang berbeda, baik internal maupun eksternal, dapat saling berkomunikasi dan bertukar data.
+3. Membuat tampilan lebih dinamis dengan memperbarui konten di halaman web secara real-time tanpa pengguna harus memuat ulang seluruh halaman.
+
+## 2. Menurutmu, mana yang lebih baik antara XML dan JSON? Mengapa JSON lebih populer dibandingkan XML?
+
+Tidak ada yang secara objektif "lebih baik", keduanya adalah format untuk menstrukturkan data, tapi untuk kasus penggunaan yang berbeda.
+
+- XML untuk versi lebih verbose dan kaku, menggunakan tag pembuka dan penutup seperti HTML. Cocok untuk dokumen yang kompleks dan sistem yang memerlukan validasi ketat (seperti konfigurasi pada sistem enterprise).
+
+- JSON untuk versi lebih ringkas dan mudah dibaca manusia, menggunakan format key-value pair. Strukturnya sangat mirip dengan objek pada JavaScript atau dictionary pada Python.
+
+Mengapa JSON Lebih Populer?
+1. Lebih Ringan
+   JSON membutuhkan lebih sedikit teks untuk merepresentasikan data yang sama dibandingkan XML, sehingga transfer data lebih cepat.
+2. Mudah Diolah (Parsing)
+   Strukturnya sederhananya dapat langsung diubah menjadi objek asli di hampir semua bahasa pemrograman, terutama JavaScript. Karena JavaScript adalah bahasa utama di sisi browser.
+3. Sangat Cocok untuk API
+   Dengan semakin populernya REST API untuk menghubungkan frontend dan backend, JSON banyak dipakai sebagai standar utama karena formatnya yang sederhana dan mudah diproses.
+
+## 3. Fungsi Method is_valid() pada Form Django
+
+is_valid() adalah sebuah method pada objek form Django yang menjalankan seluruh proses validasi data yang dikirim oleh pengguna. Dengan:
+1. Memeriksa semua data yang dikirimkan ke form.
+2. Memvalidasi tipe data (misalnya, memastikan input angka adalah angka).
+3. Menjalankan aturan validasi spesifik yang telah ditentukan (misalnya, panjang minimal password).
+4. Jika semua data valid, method ini mengembalikan True dan menempatkan data yang sudah bersih di dalam atribut form.cleaned_data. Jika gagal, mengembalikan False dan mengisi atribut form.errors dengan detail kesalahan.
+
+Kita membutuhkannya untuk memastikan integritas data, mencegah input berbahaya, dan memberikan feedback kesalahan yang jelas kepada pengguna.
+
+## 4. Kebutuhan csrf_token pada Form Django
+csrf_token dibutuhkan untuk mencegah serangan siber bernama Cross-Site Request Forgery (CSRF).
+
+Tanpa csrf_token, form akan lebih rentan. Serangan CSRF terjadi ketika situs web berbahaya menipu browser pengguna untuk mengirimkan permintaan yang tidak diinginkan ke situs lain di mana pengguna tersebut sedang login.
+
+Penyerang membuat halaman web palsu dengan form tersembunyi yang targetnya adalah aplikasi (misalnya, form untuk mengubah password atau mentransfer uang). Jika korban yang sedang login di aplikasi mengunjungi halaman palsu tersebut, browser-nya akan secara otomatis mengirimkan form tersembunyi itu. Server akan menganggapnya sebagai permintaan yang sah karena dikirim oleh browser pengguna yang sah. Akibatnya, penyerang berhasil melakukan tindakan atas nama korban tanpa disadari.
+
+csrf_token mencegah ini dengan menambahkan sebuah kode rahasia unik pada form yang hanya diketahui oleh server dan browser pengguna. Permintaan tanpa kode rahasia yang cocok akan langsung ditolak.
+
+## 5. Implementasi Tugas
+
+1. Penyediaan Data dalam Format XML & JSON
+Untuk menyediakan data produk dalam format yang dapat dibaca mesin, file main/views.py mengimplementasikan empat fungsi baru: show_json, show_xml, show_json_by_id, dan show_xml_by_id. Keempat fungsi ini bertugas untuk mengambil data produk dari database. Proses konversi dari data QuerySet ke format JSON dan XML didukung oleh serializer internal yang disediakan oleh Django.
+
+2. Pemetaan URL untuk Akses Data
+Agar setiap view yang baru dapat diakses melalui URL, diperlukan pemetaan baru di dalam file main/urls.py. Konfigurasi ini memastikan bahwa permintaan ke endpoint tertentu akan diarahkan ke fungsi yang sesuai. Berikut adalah path yang ditambahkan:
+
+path('xml/', show_xml, name='show_xml')
+path('json/', show_json, name='show_json')
+path('xml/<str:item_id>/', show_xml_by_id, name='show_xml_by_id')
+path('json/<str:item_id>/', show_json_by_id, name='show_json_by_id')
+
+3. Implementasi Halaman Utama dan Detail Produk
+Untuk struktur halaman yang konsisten dan menghindari kode redundan, saya membuat base.html dibuat di direktori utama. Selanjutnya, halaman main.html diubah untuk mewarisi (inherit) struktur dari base.html. Fungsionalitas utama dari halaman main.html adalah untuk menampilkan seluruh daftar produk. Halaman ini juga dilengkapi dengan elemen navigasi, termasuk tombol yang mengarah ke formulir tambah produk (add_item.html) dan tautan unik pada setiap produk untuk melihat detailnya (item_detail.html).
+
+4. Pengembangan Formulir Tambah Produk
+Untuk menangani input data produk dari pengguna, saya membuat file forms.py di dalam direktori main. Di dalamnya, didefinisikan sebuah kelas form yang strukturnya sesuai dengan model produk. Antarmuka pengguna untuk formulir ini kemudian dibuat dalam sebuah template bernama add_item.html. Template ini akan me-render form yang telah didefinisikan, menggunakan placeholder {{ form.as_table }} untuk menampilkannya dalam format tabel.
+
+5. Pembuatan Halaman Detail Produk
+Sebuah template baru, item_detail.html, dikembangkan untuk menampilkan informasi lengkap dari satu produk. Template ini dirancang untuk menerima satu objek produk dan menyajikan seluruh atributnya kepada pengguna. Sebagai tambahan, halaman ini juga dilengkapi dengan tombol navigasi yang memungkinkan pengguna untuk kembali ke halaman daftar produk utama.
+
+## 6. Apakah ada feedback untuk asdos di tutorial 2 yang sudah kalian kerjakan?
+Sejauh ini bantuan dari asdos sudah sangat cukup yang memungkinkan pengerjaan tutorial menjadi lebih lancar, dengan arahan dan bantuan yang sesuai ketika saya mengalami error kemarin.
+
+## Bukti screenshot POSTMAN
+https://drive.google.com/file/d/1DkimOhVVsfNOZ6pUStl7VPUMW-7LiAok/view?usp=sharing
+
+https://drive.google.com/file/d/1WE37-n8In-EA6iI5WrmZf9ZZZx3Wpi_c/view?usp=sharing
+
