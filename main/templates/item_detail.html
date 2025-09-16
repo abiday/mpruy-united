@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="item-detail">
+        <h2>{{ item.name }}</h2>
+        <p><strong>Harga:</strong> Rp {{ item.price|floatformat:0 }}</p>
+        <p><strong>Deskripsi:</strong> {{ item.description }}</p>
+        <p><strong>Kategori:</strong> {{ item.get_category_display }}</p>
+        {% if item.thumbnail %}
+            <img src="{{ item.thumbnail }}" alt="{{ item.name }}" style="max-width:300px;">
+        {% endif %}
+        <div class="mt-4">
+            <a href="{% url 'main:show_main' %}" class="btn btn-secondary">Kembali ke Daftar Item</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

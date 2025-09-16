@@ -1,8 +1,52 @@
-...
-<h5>appname: </h5>
-<p>{{ appname }}</p>
-<h5>Name: </h5>
-<p>{{ name }}<p>
-<h5>Class: </h5>
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Football Shop</h1>
+
+<h5>NPM: </h5>
+<p>{{ npm }}</p>
+
+<h5>Name:</h5>
+<p>{{ name }}</p>
+
+<h5>Class:</h5>
 <p>{{ class }}</p>
-...
+
+<a href="{% url 'main:create_item' %}">
+    <button class="btn btn-primary">+ Add New Item</button>
+</a>
+
+<hr>
+
+{% if not shop_items %}
+    <p>No products available yet</p>
+{% else %}
+    <div class="row">
+        {% for item in shop_items %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                {% if item.thumbnail %}
+                    <img src="{{ item.thumbnail }}" class="card-img-top" alt="{{ item.name }}" style="height: 200px; object-fit: cover;">
+                {% endif %}
+                
+                <div class="card-body">
+                    <h5 class="card-title">{{ item.name }}</h5>
+                    <p class="card-text">
+                        <strong>Price: ${{ item.price }}</strong><br>
+                        <span class="badge bg-secondary">{{ item.category }}</span>
+                        {% if item.is_featured %}
+                            <span class="badge bg-warning">Featured</span>
+                        {% endif %}
+                    </p>
+                    
+                    <p class="card-text">{{ item.description|truncatewords:15 }}...</p>
+                    
+                    <a href="{% url 'main:show_item' item.id %}" class="btn btn-info">View Details</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+{% endblock content %}
