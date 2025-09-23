@@ -12,9 +12,23 @@
 <h5>Class:</h5>
 <p>{{ class }}</p>
 
-<a href="{% url 'main:create_item' %}">
-    <button class="btn btn-primary">+ Add New Item</button>
+<h5>Sesi terakhir login: {{ last_login }}</h5>
+
+<a href="?filter=all">
+    <button type="button">All Articles</button>
 </a>
+<a href="?filter=my">
+    <button type="button">My Articles</button>
+</a> 
+
+<div class="d-flex gap-2 mb-2">
+    <a href="{% url 'main:create_item' %}">
+        <button class="btn btn-primary">+ Add New Item</button>
+    </a>
+    <a href="{% url 'main:logout' %}">
+        <button class="btn btn-outline-danger">Logout</button>
+    </a>
+  </div>
 
 <hr>
 

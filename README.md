@@ -139,7 +139,7 @@ graph TD
 1. **Inisiasi Permintaan (HTTP Request)**
    Client (browser) mengirimkan request ke server, melalui browser web akan dikirim sebuah HTTP Request ke server untuk mengakses sebuah URL tertentu.
    
-   Contoh: Pengguna mengetik https://abid-dayyan-mpruy-united.pbp.cs.ui.ac.id/items/ di browser dan menekan Enter.
+   Contoh: User mengetik https://abid-dayyan-mpruy-united.pbp.cs.ui.ac.id/items/ di browser dan menekan Enter.
 
 
 2. **Resolusi URL (urls.py)**
@@ -267,4 +267,157 @@ Sejauh ini bantuan dari asdos sudah sangat cukup yang memungkinkan pengerjaan tu
 https://drive.google.com/file/d/1DkimOhVVsfNOZ6pUStl7VPUMW-7LiAok/view?usp=sharing
 
 https://drive.google.com/file/d/1WE37-n8In-EA6iI5WrmZf9ZZZx3Wpi_c/view?usp=sharing
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## 1. Apa itu Django AuthenticationForm? Jelaskan juga kelebihan dan kekurangannya.
+AuthenticationForm adalah form bawaan Django untuk proses login pengguna. Tugas utamanya adalah menerima username dan password dari pengguna, lalu memverifikasi apakah kredensial tersebut valid dan cocok dengan pengguna yang aktif di database.
+
+Kelebihan:
+- Siap pakai karena sudah disediakan oleh django, jadi mempercepat proses development karena tidak perlu membuat form login dari awal
+- Aman karena otomatis menangani validasi keamanan dasar, seperti memeriksa apakah pengguna berstatus aktif (is_active) sebelum mengizinkan login
+- Sudah terintegrasi dengan sistem autentikasi Django lainnya seperti login() dan logout()
+
+Kekurangan:
+- Memiliki fitur terbatas dengan field hanya username dan password, jadi fitur tambahan seperti "Remember Me" perlu dicustom lebih lanjut
+- Hanya untuk autentikasi menggunakan username. Jika ingin menggunakan email sebagai gantinya, perlu disesuaikan dengan khusus
+
+## 2. Apa perbedaan antara autentikasi dan otorisasi? Bagaiamana Django mengimplementasikan kedua konsep tersebut?
+
+# Autentikasi (Authentication) menjawab pertanyaan, "Siapa Anda?"
+Ini adalah proses memverifikasi identitas. Contohnya saat memasukkan username dan password untuk membuktikan bahwa user adalah pemilik akun tersebut.
+
+# Otorisasi (Authorization) menjawab pertanyaan, "Apa yang boleh Anda lakukan?" 
+Ini adalah proses menentukan hak akses atau izin yang dimiliki oleh user yang identitasnya telah terverifikasi. Contohnya, meskipun Anda dan seorang admin sama-sama berhasil login (autentikasi), hanya admin yang memiliki izin (otorisasi) untuk mengakses halaman admin.
+
+# Implementasi di Django
+Autentikasi melalui django.contrib.auth. Ini mencakup model User, form seperti AuthenticationForm, dan fungsi-fungsi inti seperti authenticate() (untuk memeriksa kredensial) dan login() (untuk memulai sesi pengguna).
+
+Otorisasi melalui sistem perizinan (permissions). Ini termasuk flag pada model User (seperti is_staff dan is_superuser), izin granular (misalnya can_add_product), dan Grup untuk menerapkan serangkaian izin ke banyak pengguna sekaligus. Untuk melindungi view, Django menyediakan decorators seperti @login_required dan @permission_required.
+
+## 3. Apa saja kelebihan dan kekurangan session dan cookies dalam konteks menyimpan state di aplikasi web?
+
+# Cookies: Data disimpan langsung di browser pengguna.
+
+Kelebihan:
+- Beban Server Ringan karena data disimpan di sisi klien, jadi tidak membebani penyimpanan server
+- Sederhana dan mudah diimplementasikan untuk data yang tidak sensitif seperti preferensi tema (gelap/terang)
+
+Kekurangan:
+- Tidak Aman karena data dapat dilihat dan diubah oleh pengguna, sehingga sangat tidak cocok untuk menyimpan informasi sensitif (misalnya, ID pengguna)
+- Ukuran cookie sangat kecil (sekitar 4KB)
+- User dapat menonaktifkan cookies di browser mereka
+
+# Session adalah sebuah ID unik yang disimpan di cookie pengguna. Data aslinya disimpan di sisi server (misalnya, di database).
+
+Kelebihan:
+- Aman karena data sensitif tersimpan aman di server, tidak dapat diakses langsung oleh pengguna
+- Ukuran fleksibel karena tidak ada batasan ukuran data yang signifikan selain kapasitas penyimpanan server
+
+Kekurangan:
+- Beban server lebih berat karena perlu resource server untuk menyimpan dan mengelola data sesi, yang bisa menjadi masalah pada skala besar
+
+## 4. Apakah penggunaan cookies aman secara default dalam pengembangan web, atau apakah ada risiko potensial yang harus diwaspadai? Bagaimana Django menangani hal tersebut?
+
+Secara default, penggunaan cookies tidak aman. Ada beberapa risiko:
+
+# Risiko Potensial
+Pencurian (XSS): Jika situs rentan terhadap Cross-Site Scripting (XSS), penyerang bisa menyuntikkan skrip untuk mencuri cookies pengguna, termasuk cookie sesi yang bisa digunakan untuk membajak akun.
+
+Pemalsuan (CSRF): Penyerang bisa menipu browser pengguna untuk mengirim permintaan ke situs Anda menggunakan cookie yang sudah ada, memaksa pengguna melakukan tindakan yang tidak diinginkan.
+
+Penyadapan: Jika situs tidak menggunakan HTTPS, cookies dikirim sebagai teks biasa dan dapat disadap oleh pihak ketiga di jaringan yang sama.
+
+# Implementasi Protection dari Django
+- Menyimpan data penting di server, seperti username tidak di cookie. Yang disimpan cuma semacam kunci sesi yang random dan aman. Data aslinya tetap di server jadi tidak bisa diintip dari server'
+- Django otomatis menandai flag HttpOnly di cookie. Yang artinya "Jangan biarkan JavaScript menyentuh cookie ini" Sehingga aman dari XSS
+- Setiap form yang mengirim data (misalnya POST) wajib punya csrf_token. Ini memastikan permintaan yang masuk benar-benar dari situs kita, bukan dari situs lain yang mencoba menipu
+- Django juga menyediakan pengaturan seperti SESSION_COOKIE_SECURE = True untuk memaksa browser agar hanya mengirim cookie lewat koneksi HTTPS yang aman
+
+## 5. Implementasi Tugas 4
+
+Berikut langkah-langkah implementasi autentikasi (registrasi, login, logout), pembatasan akses halaman, penggunaan cookies `last_login`, pengaitan model `Shop` dengan `User`, serta pengisian data dummy melalui website.
+
+### A. Persiapan Model dan Migrasi
+- Model `Shop` sudah terhubung ke `User` melalui field `user` di `main/models.py`.
+- Jalankan migrasi bila diperlukan:
+
+```bash
+python manage.py makemigrations
+python manage.py migrate
+```
+
+### B. Form Registrasi & Login
+- Buat form registrasi berbasis `UserCreationForm` dan gunakan `AuthenticationForm` untuk login di `main/forms.py`.
+- Template: `main/templates/register.html` dan `main/templates/login.html` menampilkan form dan menyertakan `{% csrf_token %}`.
+
+### C. View Registrasi, Login, Logout, dan Proteksi
+- Di `main/views.py`:
+  - `register`: render dan proses form; sukses → redirect ke login.
+  - `login_user`: verifikasi kredensial, `login(request, user)`, set cookie `last_login`, redirect ke halaman utama.
+  - `logout_user`: `logout(request)`, hapus cookie `last_login`, redirect ke login.
+  - Terapkan `@login_required` untuk `show_main` dan `item_detail` agar hanya bisa diakses setelah login.
+  - Saat membuat item, set kepemilikan: `Shop(user=request.user, ...)`.
+
+Contoh pengaturan cookie:
+
+```python
+# saat login sukses
+response = HttpResponseRedirect(reverse('main:show_main'))
+response.set_cookie('last_login', str(datetime.datetime.now()))
+return response
+
+# saat logout
+response = HttpResponseRedirect(reverse('main:login'))
+response.delete_cookie('last_login')
+return response
+```
+
+### D. URL Routing
+- Tambah path di `main/urls.py`:
+
+```python
+path('register/', register, name='register')
+path('login/', login_user, name='login')
+path('logout/', logout_user, name='logout')
+path('', show_main, name='show_main')
+path('item/<int:id>/', item_detail, name='item_detail')
+path('create-item/', create_item, name='create_item')
+```
+
+### E. Template
+- `main.html` menampilkan:
+  - Username pengguna: `{{ user.username }}`
+  - Nilai cookie: `{{ request.COOKIES.last_login }}` (opsional)
+  - Daftar item yang dimiliki user login.
+- `item_detail.html` menampilkan detail item tunggal.
+- `create_item.html` menampilkan form tambah item.
+
+### F. Redirect Login Otomatis
+- Di `settings.py`, pastikan:
+
+```python
+LOGIN_URL = '/login/'
+```
+
+### G. Pengisian Data Dummy via Website (2 akun × 3 item)
+1) Buka aplikasi di web lalu buat dua akun melalui halaman Register:
+   - Username: `dum`, Password: `dummy123`
+   - Username: `dum2`, Password: `dummy123`
+
+2) Login sebagai `dum` lalu tambahkan 3 item melalui halaman tambah item (`create_item`). Ulangi proses sebagai `dum2` dan tambahkan 3 item. Setiap item otomatis terhubung dengan user yang sedang login.
+
+### H. Verifikasi
+- Jalankan server:
+
+```bash
+python manage.py runserver
+```
+
+- Pastikan:
+  - Registrasi, login, logout berfungsi.
+  - `show_main` dan `item_detail` hanya bisa diakses setelah login.
+  - `{{ user.username }}` dan cookie `last_login` tampil sesuai.
+  - Item yang terlihat sesuai kepemilikan user (`dum` vs `dum2`).
 
