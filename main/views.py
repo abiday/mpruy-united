@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.shortcuts import render, redirect, get_object_or_404
 from main.forms import ShopForm  
-from main.models import Shop  
+from main.models import Shop
 from django.http import HttpResponse
 from django.core import serializers
 from django.contrib import messages
@@ -81,7 +81,7 @@ def show_json_by_id(request, item_id):
        return HttpResponse(json_data, content_type="application/json")
    except Shop.DoesNotExist:
        return HttpResponse(status=404)
-   
+
 def register(request):
     form = UserCreationForm()
 
