@@ -490,6 +490,7 @@ Untuk fungsionalitas produk, saya menambahkan fitur **edit dan hapus**. Hal ini 
 ```python
 path('product/<str:id>/edit', edit_product, name='edit_product'),
 path('product/<str:id>/delete', delete_product, name='delete_product'),
+```
 
 Untuk kustomisasi design:
 Pada sisi desain, saya memilih Tailwind CSS karena filosofi utility-first-nya karena bisa kontrol penuh dan performanya maksimal. Pendekatan ini membuat saya bisa merancang antarmuka yang unik dan punya identitas kuat, bukan sekadar menjiplak template yang sudah ada.
