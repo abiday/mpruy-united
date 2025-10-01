@@ -1,66 +1,99 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<title>Football Shop</title>
+{% endblock meta %}
+
 {% block content %}
+{% include 'navbar.html' %}
 
-<h1>Football Shop</h1>
-
-<h5>NPM: </h5>
-<p>{{ npm }}</p>
-
-<h5>Name:</h5>
-<p>{{ name }}</p>
-
-<h5>Class:</h5>
-<p>{{ class }}</p>
-
-<h5>Sesi terakhir login: {{ last_login }}</h5>
-
-<a href="?filter=all">
-    <button type="button">All Articles</button>
-</a>
-<a href="?filter=my">
-    <button type="button">My Articles</button>
-</a> 
-
-<div class="d-flex gap-2 mb-2">
-    <a href="{% url 'main:create_item' %}">
-        <button class="btn btn-primary">+ Add New Item</button>
-    </a>
-    <a href="{% url 'main:logout' %}">
-        <button class="btn btn-outline-danger">Logout</button>
-    </a>
+<!-- Hero Section -->
+<section class="relative w-full h-screen flex items-center justify-center">
+  <!-- Background -->
+  <div class="absolute inset-0">
+    <img src="{% static 'image/signin-bg.png' %}" alt="Football Hero" class="w-full h-full object-cover">
+    <div class="absolute inset-0 bg-black bg-opacity-50"></div>
   </div>
 
-<hr>
+  <!-- Hero Content -->
+  <div class="relative z-10 text-center">
+    <h1 class="text-6xl md:text-8xl font-extrabold text-white mb-6">KITS</h1>
+    <a href="#products" 
+       class="inline-block bg-yellow-400 text-black font-bold px-8 py-3 rounded-md shadow hover:bg-yellow-500 transition">
+      SHOP NOW →
+    </a>
+  </div>
+</section>
 
-{% if not shop_items %}
-    <p>No products available yet</p>
-{% else %}
-    <div class="row">
-        {% for item in shop_items %}
-        <div class="col-md-4 mb-4">
-            <div class="card">
-                {% if item.thumbnail %}
-                    <img src="{{ item.thumbnail }}" class="card-img-top" alt="{{ item.name }}" style="height: 200px; object-fit: cover;">
-                {% endif %}
-                
-                <div class="card-body">
-                    <h5 class="card-title">{{ item.name }}</h5>
-                    <p class="card-text">
-                        <strong>Price: ${{ item.price }}</strong><br>
-                        <span class="badge bg-secondary">{{ item.category }}</span>
-                        {% if item.is_featured %}
-                            <span class="badge bg-warning">Featured</span>
-                        {% endif %}
-                    </p>
-                    
-                    <p class="card-text">{{ item.description|truncatewords:15 }}...</p>
-                    
-                    <a href="{% url 'main:show_item' item.id %}" class="btn btn-info">View Details</a>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
+<!-- Products Section -->
+<section id="products" class="w-full min-h-screen pt-20 pb-12" style="background-color: #14193a;">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <!-- Section Header -->
+    <div class="text-center mb-12">
+      <h2 class="text-4xl font-extrabold text-white mb-3">Our Kits</h2>
+      <p class="text-gray-300">Choose your favorite football gear and join the squad</p>
     </div>
-{% endif %}
 
+    <!-- Filter Section -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 bg-white rounded-lg border border-gray-200 p-4">
+      <div class="flex space-x-3 mb-4 sm:mb-0">
+        <a href="?" class="{% if request.GET.filter == 'all' or not request.GET.filter  %} bg-red-600 text-white{% else %}bg-white text-gray-700 border border-gray-300{% endif %} px-4 py-2 rounded-md font-medium transition-colors hover:bg-blue-600 hover:text-white">
+          All Products
+        </a>
+        <a href="?filter=my" class="{% if request.GET.filter == 'my' %} bg-red-600 text-white{% else %}bg-white text-gray-700 border border-gray-300{% endif %} px-4 py-2 rounded-md font-medium transition-colors hover:bg-blue-600 hover:text-white">
+          My Products
+        </a>
+      </div>
+      {% if user.is_authenticated %}
+        <a href="{% url 'main:create_product' %}" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-red-600 to-blue-700 text-white rounded-md hover:from-red-700 hover:to-blue-800 transition-colors">
+          + Add New Product
+        </a>
+      {% endif %}
+    </div>
+
+    <!-- Products Grid -->
+    {% if not shop_products %}
+      <div class="bg-white rounded-lg border border-gray-200 p-12 text-center">
+        <div class="w-32 h-32 mx-auto mb-4">
+          <img src="{% static 'image/no-product.png' %}" alt="No products available" class="w-full h-full object-contain">
+        </div>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">No products found</h3>
+        <p class="text-gray-500 mb-6">Be the first to add football products to the shop.</p>
+        {% if user.is_authenticated %}
+          <a href="{% url 'main:create_product' %}" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-red-600 to-blue-700 text-white rounded-md hover:from-red-700 hover:to-blue-800 transition">
+            Add Product
+          </a>
+        {% endif %}
+      </div>
+    {% else %}
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for product in shop_products %}
+          {% include 'product_card.html' with product=product %}
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- Smooth Scroll -->
+<script>
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener("click", function(e) {
+      e.preventDefault();
+      document.querySelector(this.getAttribute("href")).scrollIntoView({
+        behavior: "smooth"
+      });
+    });
+  });
+</script>
+
+<style>
+  .gradient-text {
+    background: linear-gradient(to right, #dc2626, #1d4ed8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+</style>
 {% endblock content %}

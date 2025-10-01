@@ -21,6 +21,7 @@ class Shop(models.Model):
     price = models.IntegerField()
     description = models.TextField()
     thumbnail = models.URLField(blank=True, null=True)
+    second_image = models.URLField(blank=True, null=True, help_text="Optional second image for hover effect")
     category = models.CharField(
         max_length=3,
         choices=CATEGORY_CHOICES,

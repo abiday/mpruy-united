@@ -1,32 +1,58 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block meta %}
-<title>Register</title>
+<title>Register - Football Shop</title>
 {% endblock meta %}
 
 {% block content %}
+<div class="relative min-h-screen flex items-center justify-center bg-black">
+  <!-- Background Image -->
+  <div class="absolute inset-0">
+    <img src="{% static 'image/signin-bg.png' %}" alt="Football Background" class="w-full h-full object-cover">
+    <div class="absolute inset-0 bg-black bg-opacity-70"></div>
+  </div>
 
-<div>
-  <h1>Register</h1>
+  <!-- Register Form -->
+  <div class="relative z-10 w-full max-w-md bg-gradient-to-br from-blue-900 to-red-800 p-8 rounded-2xl shadow-xl border border-yellow-500">
+    <div class="text-center mb-6">
+      <img src="{% static 'image/mpruy-logo.png' %}" alt="Football Shop Logo" class="mx-auto w-[220px] mb-4">
+      <h2 class="text-3xl font-bold text-yellow-400">Join Us</h2>
+      <p class="text-gray-200">Create your Football Shop account</p>
+    </div>
 
-  <form method="POST">
-    {% csrf_token %}
-    <table>
-      {{ form.as_table }}
-      <tr>
-        <td></td>
-        <td><input type="submit" name="submit" value="Daftar" /></td>
-      </tr>
-    </table>
-  </form>
+    <form method="POST" action="" class="space-y-5">
+      {% csrf_token %}
+      <div>
+        <label for="username" class="block text-sm font-medium text-yellow-300 mb-2">Username</label>
+        <input id="username" name="username" type="text" required
+          class="w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-300 focus:ring-2 focus:ring-blue-500">
+      </div>
 
-  {% if messages %}
-  <ul>
-    {% for message in messages %}
-    <li>{{ message }}</li>
-    {% endfor %}
-  </ul>
-  {% endif %}
+      <div>
+        <label for="password1" class="block text-sm font-medium text-yellow-300 mb-2">Password</label>
+        <input id="password1" name="password1" type="password" required
+          class="w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-300 focus:ring-2 focus:ring-red-500">
+      </div>
+
+      <div>
+        <label for="password2" class="block text-sm font-medium text-yellow-300 mb-2">Confirm Password</label>
+        <input id="password2" name="password2" type="password" required
+          class="w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-300 focus:ring-2 focus:ring-blue-500">
+      </div>
+
+      <button type="submit"
+        class="w-full py-3 rounded-lg font-semibold text-white bg-gradient-to-r from-blue-600 to-red-600 hover:from-blue-700 hover:to-red-700 transition">
+        Create Account
+      </button>
+    </form>
+
+    <div class="mt-6 text-center">
+      <p class="text-gray-200 text-sm">
+        Already have an account?
+        <a href="{% url 'main:login' %}" class="text-yellow-400 hover:text-yellow-300 font-medium">Sign In</a>
+      </p>
+    </div>
+  </div>
 </div>
-
 {% endblock content %}

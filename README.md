@@ -50,11 +50,11 @@ Artinya, setiap request yang masuk ke alamat utama web akan diteruskan ke file `
 
 Model di sini sebagai blueprint untuk data yang akan disimpan di database. Saya membuat model `Product` di dalam `main/models.py` dengan atribut-atribut:
 
-* `name (CharField)` → Nama item
-* `price (IntegerField)` → Harga item
-* `description (TextField)` → Deskripsi item yang bisa panjang
+* `name (CharField)` → Nama product
+* `price (IntegerField)` → Harga product
+* `description (TextField)` → Deskripsi product yang bisa panjang
 * `thumbnail (URLField)` → Link gambar yang valid
-* `category (CharField)` → Kategori item
+* `category (CharField)` → Kategori product
 * `is_featured (BooleanField)` → Status (True/False)
 
 Setelah model selesai dibuat:
@@ -139,13 +139,13 @@ graph TD
 1. **Inisiasi Permintaan (HTTP Request)**
    Client (browser) mengirimkan request ke server, melalui browser web akan dikirim sebuah HTTP Request ke server untuk mengakses sebuah URL tertentu.
    
-   Contoh: User mengetik https://abid-dayyan-mpruy-united.pbp.cs.ui.ac.id/items/ di browser dan menekan Enter.
+   Contoh: User mengetik https://abid-dayyan-mpruy-united.pbp.cs.ui.ac.id/products/ di browser dan menekan Enter.
 
 
 2. **Resolusi URL (urls.py)**
    Dispatcher mencocokkan URL ke fungsi view. Jika cocok → jalankan view. Jika tidak → error 404.
 
-   Contoh: Dalam urls.py, Django menemukan pola path('items/', views.show_items, name='show_items'). Karena cocok, Django akan memanggil fungsi bernama show_items yang ada di dalam views.py.
+   Contoh: Dalam urls.py, Django menemukan pola path('products/', views.show_products, name='show_products'). Karena cocok, Django akan memanggil fungsi bernama show_products yang ada di dalam views.py.
 
 
 3. **Eksekusi Proses Bisnis (views.py)**
@@ -248,17 +248,17 @@ Agar setiap view yang baru dapat diakses melalui URL, diperlukan pemetaan baru d
 
 path('xml/', show_xml, name='show_xml')
 path('json/', show_json, name='show_json')
-path('xml/<str:item_id>/', show_xml_by_id, name='show_xml_by_id')
-path('json/<str:item_id>/', show_json_by_id, name='show_json_by_id')
+path('xml/<str:product_id>/', show_xml_by_id, name='show_xml_by_id')
+path('json/<str:product_id>/', show_json_by_id, name='show_json_by_id')
 
 3. Implementasi Halaman Utama dan Detail Produk
-Untuk struktur halaman yang konsisten dan menghindari kode redundan, saya membuat base.html dibuat di direktori utama. Selanjutnya, halaman main.html diubah untuk mewarisi (inherit) struktur dari base.html. Fungsionalitas utama dari halaman main.html adalah untuk menampilkan seluruh daftar produk. Halaman ini juga dilengkapi dengan elemen navigasi, termasuk tombol yang mengarah ke formulir tambah produk (add_item.html) dan tautan unik pada setiap produk untuk melihat detailnya (item_detail.html).
+Untuk struktur halaman yang konsisten dan menghindari kode redundan, saya membuat base.html dibuat di direktori utama. Selanjutnya, halaman main.html diubah untuk mewarisi (inherit) struktur dari base.html. Fungsionalitas utama dari halaman main.html adalah untuk menampilkan seluruh daftar produk. Halaman ini juga dilengkapi dengan elemen navigasi, termasuk tombol yang mengarah ke formulir tambah produk (add_product.html) dan tautan unik pada setiap produk untuk melihat detailnya (product_detail.html).
 
 4. Pengembangan Formulir Tambah Produk
-Untuk menangani input data produk dari pengguna, saya membuat file forms.py di dalam direktori main. Di dalamnya, didefinisikan sebuah kelas form yang strukturnya sesuai dengan model produk. Antarmuka pengguna untuk formulir ini kemudian dibuat dalam sebuah template bernama add_item.html. Template ini akan me-render form yang telah didefinisikan, menggunakan placeholder {{ form.as_table }} untuk menampilkannya dalam format tabel.
+Untuk menangani input data produk dari pengguna, saya membuat file forms.py di dalam direktori main. Di dalamnya, didefinisikan sebuah kelas form yang strukturnya sesuai dengan model produk. Antarmuka pengguna untuk formulir ini kemudian dibuat dalam sebuah template bernama add_product.html. Template ini akan me-render form yang telah didefinisikan, menggunakan placeholder {{ form.as_table }} untuk menampilkannya dalam format tabel.
 
 5. Pembuatan Halaman Detail Produk
-Sebuah template baru, item_detail.html, dikembangkan untuk menampilkan informasi lengkap dari satu produk. Template ini dirancang untuk menerima satu objek produk dan menyajikan seluruh atributnya kepada pengguna. Sebagai tambahan, halaman ini juga dilengkapi dengan tombol navigasi yang memungkinkan pengguna untuk kembali ke halaman daftar produk utama.
+Sebuah template baru, product_detail.html, dikembangkan untuk menampilkan informasi lengkap dari satu produk. Template ini dirancang untuk menerima satu objek produk dan menyajikan seluruh atributnya kepada pengguna. Sebagai tambahan, halaman ini juga dilengkapi dengan tombol navigasi yang memungkinkan pengguna untuk kembali ke halaman daftar produk utama.
 
 ## 6. Apakah ada feedback untuk asdos di tutorial 2 yang sudah kalian kerjakan?
 Sejauh ini bantuan dari asdos sudah sangat cukup yang memungkinkan pengerjaan tutorial menjadi lebih lancar, dengan arahan dan bantuan yang sesuai ketika saya mengalami error kemarin.
@@ -357,8 +357,8 @@ python manage.py migrate
   - `register`: render dan proses form; sukses → redirect ke login.
   - `login_user`: verifikasi kredensial, `login(request, user)`, set cookie `last_login`, redirect ke halaman utama.
   - `logout_user`: `logout(request)`, hapus cookie `last_login`, redirect ke login.
-  - Terapkan `@login_required` untuk `show_main` dan `item_detail` agar hanya bisa diakses setelah login.
-  - Saat membuat item, set kepemilikan: `Shop(user=request.user, ...)`.
+  - Terapkan `@login_required` untuk `show_main` dan `product_detail` agar hanya bisa diakses setelah login.
+  - Saat membuat product, set kepemilikan: `Shop(user=request.user, ...)`.
 
 Contoh pengaturan cookie:
 
@@ -382,17 +382,17 @@ path('register/', register, name='register')
 path('login/', login_user, name='login')
 path('logout/', logout_user, name='logout')
 path('', show_main, name='show_main')
-path('item/<int:id>/', item_detail, name='item_detail')
-path('create-item/', create_item, name='create_item')
+path('product/<int:id>/', product_detail, name='product_detail')
+path('create-product/', create_product, name='create_product')
 ```
 
 ### E. Template
 - `main.html` menampilkan:
   - Username pengguna: `{{ user.username }}`
   - Nilai cookie: `{{ request.COOKIES.last_login }}` (opsional)
-  - Daftar item yang dimiliki user login.
-- `item_detail.html` menampilkan detail item tunggal.
-- `create_item.html` menampilkan form tambah item.
+  - Daftar product yang dimiliki user login.
+- `product_detail.html` menampilkan detail product tunggal.
+- `create_product.html` menampilkan form tambah product.
 
 ### F. Redirect Login Otomatis
 - Di `settings.py`, pastikan:
@@ -401,12 +401,12 @@ path('create-item/', create_item, name='create_item')
 LOGIN_URL = '/login/'
 ```
 
-### G. Pengisian Data Dummy via Website (2 akun × 3 item)
+### G. Pengisian Data Dummy via Website (2 akun × 3 product)
 1) Buka aplikasi di web lalu buat dua akun melalui halaman Register:
    - Username: `dum`, Password: `dummy123`
    - Username: `dum2`, Password: `dummy123`
 
-2) Login sebagai `dum` lalu tambahkan 3 item melalui halaman tambah item (`create_item`). Ulangi proses sebagai `dum2` dan tambahkan 3 item. Setiap item otomatis terhubung dengan user yang sedang login.
+2) Login sebagai `dum` lalu tambahkan 3 product melalui halaman tambah product (`create_product`). Ulangi proses sebagai `dum2` dan tambahkan 3 product. Setiap product otomatis terhubung dengan user yang sedang login.
 
 ### H. Verifikasi
 - Jalankan server:
@@ -417,7 +417,69 @@ python manage.py runserver
 
 - Pastikan:
   - Registrasi, login, logout berfungsi.
-  - `show_main` dan `item_detail` hanya bisa diakses setelah login.
+  - `show_main` dan `product_detail` hanya bisa diakses setelah login.
   - `{{ user.username }}` dan cookie `last_login` tampil sesuai.
-  - Item yang terlihat sesuai kepemilikan user (`dum` vs `dum2`).
+  - product yang terlihat sesuai kepemilikan user (`dum` vs `dum2`).
 
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+## Tugas 5
+## 1. Urutan Prioritas CSS Selector (Specificity)
+
+Ketika beberapa aturan CSS menargetkan elemen HTML yang sama, browser akan menentukan aturan mana yang akan diterapkan berdasarkan urutan prioritas atau **specificity**. Urutan prioritas dari yang **tertinggi** hingga **terendah** adalah sebagai berikut:
+
+1.  **Inline Styles**: Atribut `style` yang ditulis langsung pada elemen HTML.
+    * Contoh: `<div style="color: red;"></div>`
+2.  **ID Selector**: Selector yang menargetkan atribut `id` unik sebuah elemen.
+    * Contoh: `#header { background-color: blue; }`
+3.  **Class, Attribute, dan Pseudo-class Selectors**: Selector yang menargetkan elemen berdasarkan `class`, atribut (misalnya, `[type="text"]`), atau status tertentu (misalnya, `:hover`).
+    * Contoh: `.button { color: white; }`
+4.  **Element (Type) Selector**: Selector yang menargetkan semua elemen dengan nama tag yang sama.
+    * Contoh: `p { font-size: 16px; }`
+5.  **Universal Selector (`*`)**: Menargetkan semua elemen.
+
+**Catatan Penting**: Penggunaan `!important` pada sebuah properti CSS akan mengesampingkan semua aturan prioritas lainnya, menjadikannya yang paling utama. Namun, penggunaannya tidak disarankan karena dapat mempersulit proses *debugging*.
+
+---
+
+## 2. Pentingnya Responsive Design
+
+**Responsive design** adalah sebuah pendekatan dalam pengembangan web yang membuat tampilan situs web dapat beradaptasi dengan berbagai ukuran layar dan perangkat, mulai dari desktop hingga tablet dan *smartphone*. Konsep ini sangat penting karena:
+
+* **Meningkatkan Pengalaman Pengguna (User Experience)**: Pengguna dapat mengakses konten dengan nyaman di perangkat apa pun tanpa perlu melakukan *zoom* atau *scroll* berlebihan.
+* **Meningkatkan Jangkauan Audiens**: Dengan semakin banyaknya pengguna yang mengakses internet melalui perangkat mobile, situs yang responsif dapat menjangkau audiens yang lebih luas.
+* **Meningkatkan SEO**: Google memprioritaskan situs yang *mobile-friendly* dalam hasil pencariannya.
+* **Mempermudah Perawatan**: Cukup dengan satu basis kode untuk semua perangkat, tidak perlu membuat versi mobile dan desktop yang terpisah.
+
+### Contoh Aplikasi:
+
+* **Sudah Menerapkan (Responsive)**: **Tokopedia**. Tampilan situs e-commerce ini akan menyesuaikan tata letak produk, ukuran font, dan navigasi saat dibuka di desktop, tablet, maupun *smartphone*, sehingga pengalaman berbelanja tetap optimal.
+* **Belum Menerapkan (Non-Responsive)**: **Situs-situs web lama** (contoh spesifik sulit ditemukan karena banyak yang sudah diperbarui). Situs-situs ini seringkali memiliki tampilan yang tetap (*fixed-width*). Saat dibuka di perangkat mobile, tampilannya akan menjadi sangat kecil dan sulit dinavigasi, memaksa pengguna untuk memperbesar dan menggeser layar secara manual.
+
+---
+
+## 3. Perbedaan Margin, Border, dan Padding (Box Model)
+
+Ketiga properti ini adalah komponen fundamental dari **CSS Box Model**, yang mendefinisikan bagaimana elemen HTML dirender sebagai "kotak" pada halaman.
+
+* **Padding**: Ruang transparan **di dalam** *border* yang mengelilingi konten (teks, gambar, dll.). Padding berfungsi untuk memberikan jarak antara konten dengan *border*.
+* **Border**: Garis yang berada **di antara** *padding* dan *margin*. *Border* bisa diatur ketebalan, gaya (misalnya, solid, dashed), dan warnanya.
+* **Margin**: Ruang transparan **di luar** *border*. *Margin* berfungsi untuk memberikan jarak antara elemen tersebut dengan elemen lain di sekitarnya.
+
+### Implementasi:
+
+```css
+.box {
+  /* Padding: 10px di semua sisi (atas, kanan, bawah, kiri) */
+  padding: 10px;
+
+  /* Border: 2px, garis solid, warna hitam */
+  border: 2px solid black;
+
+  /* Margin: 15px di semua sisi */
+  margin: 15px;
+
+  /* Anda juga bisa mengaturnya secara individual */
+  padding-top: 5px;
+  border-left: 5px dotted red;
+  margin-bottom: 20px;
+}

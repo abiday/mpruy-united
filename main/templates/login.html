@@ -1,32 +1,51 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block meta %}
-<title>Login</title>
+<title>Login - Football Shop</title>
 {% endblock meta %}
 
 {% block content %}
-<div class="login">
-  <h1>Login</h1>
+<div class="relative min-h-screen flex items-center justify-center bg-black">
+  <!-- Background Image -->
+  <div class="absolute inset-0">
+    <img src="{% static 'image/signin-bg.png' %}" alt="Football Background" class="w-full h-full object-cover">
+    <div class="absolute inset-0 bg-black bg-opacity-70"></div>
+  </div>
 
-  <form method="POST" action="">
-    {% csrf_token %}
-    <table>
-      {{ form.as_table }}
-      <tr>
-        <td></td>
-        <td><input class="btn login_btn" type="submit" value="Login" /></td>
-      </tr>
-    </table>
-  </form>
+  <!-- Login Form -->
+  <div class="relative z-10 w-full max-w-md bg-gradient-to-br from-red-800 to-blue-900 p-8 rounded-2xl shadow-xl border border-yellow-500">
+    <div class="text-center mb-6">
+      <img src="{% static 'image/mpruy-logo.png' %}" alt="Football Shop Logo" class="mx-auto w-[220px] mb-4">
+      <h1 class="text-3xl font-bold text-yellow-400">Sign In</h1>
+      <p class="text-gray-200">Welcome back to Football Shop</p>
+    </div>
 
-  {% if messages %}
-  <ul>
-    {% for message in messages %}
-    <li>{{ message }}</li>
-    {% endfor %}
-  </ul>
-  {% endif %} Don't have an account yet?
-  <a href="{% url 'main:register' %}">Register Now</a>
+    <form method="POST" action="" class="space-y-6">
+      {% csrf_token %}
+      <div>
+        <label for="username" class="block text-sm font-medium text-yellow-300 mb-2">Username</label>
+        <input id="username" name="username" type="text" required
+          class="w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-300 focus:ring-2 focus:ring-red-500">
+      </div>
+      <div>
+        <label for="password" class="block text-sm font-medium text-yellow-300 mb-2">Password</label>
+        <input id="password" name="password" type="password" required
+          class="w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-300 focus:ring-2 focus:ring-blue-500">
+      </div>
+
+      <button type="submit"
+        class="w-full py-3 rounded-lg font-semibold text-white bg-gradient-to-r from-red-600 to-blue-600 hover:from-red-700 hover:to-blue-700 transition">
+        Sign In
+      </button>
+    </form>
+
+    <div class="mt-6 text-center">
+      <p class="text-gray-200 text-sm">
+        Don’t have an account?
+        <a href="{% url 'main:register' %}" class="text-yellow-400 hover:text-yellow-300 font-medium">Register Now</a>
+      </p>
+    </div>
+  </div>
 </div>
-
 {% endblock content %}

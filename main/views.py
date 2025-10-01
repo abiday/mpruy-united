@@ -13,19 +13,19 @@ from django.contrib.auth.decorators import login_required
 
 @login_required(login_url='/login')
 def show_main(request):
-    shop_items = Shop.objects.all()  
+    shop_products = Shop.objects.all()  
 
     filter_type = request.GET.get("filter", "all")
     if filter_type == "all":
-        shop_items = Shop.objects.all()
+        shop_products = Shop.objects.all()
     else:
-        shop_items = Shop.objects.filter(user=request.user)
+        shop_products = Shop.objects.filter(user=request.user)
 
     context = {
         'npm': '2406356580',
         'name': 'Abid Dayyan',
         'class': 'PBP F',
-        'shop_items': shop_items,
+        'shop_products': shop_products,
         'last_login': request.COOKIES.get('last_login', 'Never')
     }
 
@@ -33,28 +33,27 @@ def show_main(request):
 
 
 @login_required(login_url='/login')
-def create_item(request): 
+def create_product(request): 
     form = ShopForm(request.POST or None)
 
     if form.is_valid() and request.method == "POST":
-        item_entry = form.save(commit=False)
-        item_entry.user = request.user
-        item_entry.save()
-        form.save()
+        product_entry = form.save(commit=False)
+        product_entry.user = request.user
+        product_entry.save()
         return redirect('main:show_main')
 
     context = {'form': form}
-    return render(request, "create_item.html", context) 
+    return render(request, "create_product.html", context)
 
 @login_required(login_url='/login')
-def show_item(request, id): 
-    item = get_object_or_404(Shop, pk=id)  
+def show_product(request, id): 
+    product = get_object_or_404(Shop, pk=id)  
     
     context = {
-        'item': item 
+        'product': product 
     }
 
-    return render(request, "item_detail.html", context) 
+    return render(request, "product_detail.html", context) 
 
 def show_xml(request):
      shop_list = Shop.objects.all()
@@ -66,18 +65,18 @@ def show_json(request):
     json_data = serializers.serialize("json", shop_list)
     return HttpResponse(json_data, content_type="application/json")
 
-def show_xml_by_id(request, item_id):
+def show_xml_by_id(request, product_id):
    try:
-       shop_item = Shop.objects.filter(pk=item_id)
-       xml_data = serializers.serialize("xml", shop_item)
+       shop_product = Shop.objects.filter(pk=product_id)
+       xml_data = serializers.serialize("xml", shop_product)
        return HttpResponse(xml_data, content_type="application/xml")
    except Shop.DoesNotExist:
        return HttpResponse(status=404)
 
-def show_json_by_id(request, item_id):
+def show_json_by_id(request, product_id):
    try:
-       shop_item = Shop.objects.get(pk=item_id)
-       json_data = serializers.serialize("json", [shop_item])
+       shop_product = Shop.objects.get(pk=product_id)
+       json_data = serializers.serialize("json", [shop_product])
        return HttpResponse(json_data, content_type="application/json")
    except Shop.DoesNotExist:
        return HttpResponse(status=404)
@@ -115,3 +114,28 @@ def logout_user(request):
     response = HttpResponseRedirect(reverse('main:login'))
     response.delete_cookie('last_login')
     return response
+
+@login_required(login_url='/login')
+def delete_product(request, id):
+    product = get_object_or_404(Shop, pk=id)
+    if product.user != request.user:
+        return HttpResponseRedirect(reverse('main:show_main'))
+    product.delete()
+    return HttpResponseRedirect(reverse('main:show_main'))
+
+@login_required(login_url='/login')
+def edit_product(request, id):
+    product = get_object_or_404(Shop, pk=id)
+    if product.user != request.user:
+        return HttpResponseRedirect(reverse('main:show_main'))
+    
+    form = ShopForm(request.POST or None, instance=product)
+    if form.is_valid() and request.method == 'POST':
+        form.save()
+        return redirect('main:show_main')
+
+    context = {
+        'form': form
+    }
+
+    return render(request, "edit_product.html", context)
