@@ -483,3 +483,16 @@ Ketiga properti ini adalah komponen fundamental dari **CSS Box Model**, yang men
   border-left: 5px dotted red;
   margin-bottom: 20px;
 }
+
+## Implementasi Checklist Tugas 5
+Untuk fungsionalitas produk, saya menambahkan fitur **edit dan hapus**. Hal ini diimplementasikan dengan memodifikasi file `main/views.py` untuk menambahkan fungsi `edit_product` dan `delete_product`. Agar kedua fungsi tersebut dapat diakses melalui URL, saya menambahkan routing baru di dalam `main/urls.py` yang menargetkan produk berdasarkan ID uniknya.
+
+```python
+path('product/<str:id>/edit', edit_product, name='edit_product'),
+path('product/<str:id>/delete', delete_product, name='delete_product'),
+
+Untuk kustomisasi design:
+Pada sisi desain, saya memilih Tailwind CSS karena filosofi utility-first-nya karena bisa kontrol penuh dan performanya maksimal. Pendekatan ini membuat saya bisa merancang antarmuka yang unik dan punya identitas kuat, bukan sekadar menjiplak template yang sudah ada.
+
+Membuat desain yang adaptif untuk berbagai perangkat pun terasa lebih intuitif dengan prefix responsifnya:
+Keunggulan utamanya adalah kecepatan: Tailwind memastikan file CSS akhir sangat kecil karena hanya menyertakan style yang digunakan. Hasilnya adalah website yang memuat lebih cepat dan memberikan pengalaman pengguna yang lebih baik.
