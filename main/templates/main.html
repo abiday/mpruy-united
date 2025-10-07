@@ -148,7 +148,6 @@
   </div>
 </div>
 
-<div id="toast-container" class="fixed bottom-4 right-4 z-50"></div>
 
 <script>
 const CURRENT_USER_ID = "{{ user.id|default:'null' }}";
@@ -310,27 +309,7 @@ async function handleProductForm(event) {
   }
 }
 
-function showToast(message, type = 'success') {
-  const toast = document.createElement('div');
-  toast.className = `transform transition-all duration-300 ease-out scale-95 opacity-0 mb-4 p-4 rounded-lg shadow-lg max-w-sm ${type === 'success' ? 'bg-gradient-to-r from-green-600 to-green-700 text-white' : 'bg-gradient-to-r from-red-600 to-red-700 text-white'}`;
-  toast.innerHTML = `
-    <div class="flex items-center">
-      <div class="flex-shrink-0">
-        ${type === 'success' ? '<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>' : '<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>'}
-      </div>
-      <div class="ml-3"><p class="text-sm font-medium">${message}</p></div>
-    </div>`;
-  const container = document.getElementById('toast-container');
-  container.appendChild(toast);
-  setTimeout(() => {
-    toast.classList.remove('scale-95', 'opacity-0');
-    toast.classList.add('scale-100', 'opacity-100');
-  }, 10);
-  setTimeout(() => {
-    toast.classList.add('scale-95', 'opacity-0');
-    setTimeout(() => container.removeChild(toast), 300);
-  }, 3000);
-}
+// showToast function is now provided by the global toast.js module
 
 document.addEventListener('DOMContentLoaded', () => {
   fetchProducts();

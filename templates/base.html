@@ -29,12 +29,12 @@
         function showAuthError(formId, message) {
             const errorDiv = document.getElementById(`${formId}Error`);
             errorDiv.textContent = message;
-            errorDiv.classList.remove('d-none');
+            errorDiv.classList.remove('hidden');
         }
 
         function hideAuthError(formId) {
             const errorDiv = document.getElementById(`${formId}Error`);
-            errorDiv.classList.add('d-none');
+            errorDiv.classList.add('hidden');
         }
 
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
@@ -106,5 +106,6 @@
         document.querySelector('[data-action="logout"]')?.addEventListener('click', handleLogout);
     </script>
     {% endblock content %}
+    {% include 'toast.html' %}
   </body>
 </html>

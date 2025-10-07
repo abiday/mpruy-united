@@ -1,0 +1,26 @@
+{% load static %}
+<div
+  id="toast-component"
+  class="fixed top-4 right-4 p-4 rounded-xl shadow-xl z-50 opacity-0 transition-all duration-300 transform translate-x-full max-w-sm"
+>
+  <div class="flex items-center justify-between">
+    <div class="flex items-center">
+      <div id="toast-icon" class="flex-shrink-0 mr-3">
+        <!-- Icon will be inserted here -->
+      </div>
+      <div>
+        <p id="toast-message" class="text-sm font-medium"></p>
+      </div>
+    </div>
+    <button 
+      id="toast-close-btn" 
+      class="flex-shrink-0 ml-3 text-white hover:text-gray-200 transition-colors"
+      onclick="hideToast()"
+    >
+      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+  </div>
+</div>
+<script src="{% static 'js/toast.js' %}"></script>
