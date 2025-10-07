@@ -10,7 +10,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_http_methods
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.core.serializers import serialize
@@ -183,6 +183,9 @@ def create_product_ajax(request):
                 }
             })
         except Exception as e:
+            import traceback
+            print(f"Error creating product: {str(e)}")
+            print(traceback.format_exc())
             return JsonResponse({
                 'status': 'error',
                 'message': str(e)
@@ -193,18 +196,49 @@ def create_product_ajax(request):
         'message': 'Invalid request method'
     }, status=405)
 
+@require_http_methods(["GET"])
 def get_products_json(request):
-    products = Shop.objects.all()
-    return JsonResponse([{
-        'id': product.id,
-        'name': product.name,
-        'price': str(product.price),
-        'description': product.description,
-        'category': product.category,
-        'image_url': product.image.url if product.image else None,
-        'second_image_url': product.second_image.url if product.second_image else None,
-        'user_id': product.user.id
-    } for product in products], safe=False)
+    try:
+        products = Shop.objects.all()
+        products_data = []
+        
+        for product in products:
+            # Safely get image URLs
+            image_url = ''
+            second_image_url = ''
+            
+            try:
+                if product.image:
+                    image_url = product.image.url
+            except (ValueError, AttributeError):
+                image_url = ''
+            
+            try:
+                if product.second_image:
+                    second_image_url = product.second_image.url
+            except (ValueError, AttributeError):
+                second_image_url = ''
+            
+            products_data.append({
+                'id': product.id,
+                'name': product.name,
+                'price': str(product.price),
+                'description': product.description,
+                'category': product.category,
+                'image_url': image_url,
+                'second_image_url': second_image_url,
+                'user_id': str(product.user.id) if product.user else None
+            })
+        
+        return JsonResponse(products_data, safe=False)
+    except Exception as e:
+        import traceback
+        print(f"Error in get_products_json: {str(e)}")
+        print(traceback.format_exc())
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e)
+        }, status=500)
 
 @csrf_exempt
 def update_product_ajax(request, id):
@@ -241,6 +275,9 @@ def update_product_ajax(request, id):
                 'message': 'Product updated successfully'
             })
         except Exception as e:
+            import traceback
+            print(f"Error updating product: {str(e)}")
+            print(traceback.format_exc())
             return JsonResponse({
                 'status': 'error',
                 'message': str(e)
@@ -253,14 +290,39 @@ def update_product_ajax(request, id):
 
 @csrf_exempt
 def delete_product_ajax(request, id):
-    if request.method == 'POST' and request.user.is_authenticated:
-        try:
-            product = Shop.objects.get(id=id, user=request.user)
-            product.delete()
-            return JsonResponse({'status': 'success'})
-        except Shop.DoesNotExist:
-            return JsonResponse({'status': 'error', 'message': 'Product not found'}, status=404)
-    return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
+    if not request.user.is_authenticated:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Authentication required'
+        }, status=401)
+    
+    try:
+        product = Shop.objects.get(id=id)
+        
+        if product.user != request.user:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Not authorized'
+            }, status=403)
+            
+        product.delete()
+        return JsonResponse({
+            'status': 'success',
+            'message': 'Product deleted successfully'
+        })
+    except Shop.DoesNotExist:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Product not found'
+        }, status=404)
+    except Exception as e:
+        import traceback
+        print(f"Error deleting product: {str(e)}")
+        print(traceback.format_exc())
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e)
+        }, status=500)
 
 @csrf_exempt
 def login_ajax(request):
