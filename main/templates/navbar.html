@@ -3,6 +3,7 @@
     .gradient-text {
       background: linear-gradient(to right, #dc2626, #1d4ed8);
       -webkit-background-clip: text;
+      background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 </style>
@@ -137,15 +138,14 @@
     </script>
 </nav>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <!-- ...existing navbar content... -->
-    <div class="navbar-nav ms-auto">
+<nav class="bg-gray-800 text-white p-4">
+    <div class="flex justify-end space-x-4">
         {% if user.is_authenticated %}
-            <span class="nav-item nav-link">Welcome, {{ user.username }}</span>
-            <button class="nav-item btn btn-link nav-link" data-action="logout">Logout</button>
+            <span class="text-sm">Welcome, {{ user.username }}</span>
+            <button class="text-sm hover:text-gray-300 transition-colors" data-action="logout">Logout</button>
         {% else %}
-            <button class="nav-item btn btn-link nav-link" data-bs-toggle="modal" data-bs-target="#loginModal">Login</button>
-            <button class="nav-item btn btn-link nav-link" data-bs-toggle="modal" data-bs-target="#registerModal">Register</button>
+            <button class="text-sm hover:text-gray-300 transition-colors" onclick="showLoginModal()">Login</button>
+            <button class="text-sm hover:text-gray-300 transition-colors" onclick="showRegisterModal()">Register</button>
         {% endif %}
     </div>
 </nav>

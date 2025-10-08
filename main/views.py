@@ -160,16 +160,11 @@ def create_product_ajax(request):
                 name=request.POST.get('name'),
                 price=request.POST.get('price'),
                 description=request.POST.get('description'),
-                category=request.POST.get('category')
+                category=request.POST.get('category'),
+                thumbnail=request.POST.get('thumbnail', ''),
+                second_image=request.POST.get('second_image', ''),
+                is_featured=request.POST.get('is_featured') == 'on'
             )
-            
-            # Handle images if provided
-            if request.FILES.get('image'):
-                product.image = request.FILES.get('image')
-            if request.FILES.get('second_image'):
-                product.second_image = request.FILES.get('second_image')
-            
-            product.save()
 
             return JsonResponse({
                 'status': 'success',
@@ -227,7 +222,8 @@ def get_products_json(request):
                 'category': product.category,
                 'image_url': image_url,
                 'second_image_url': second_image_url,
-                'user_id': str(product.user.id) if product.user else None
+                'user_id': str(product.user.id) if product.user else None,
+                'is_featured': product.is_featured
             })
         
         return JsonResponse(products_data, safe=False)
@@ -262,11 +258,9 @@ def update_product_ajax(request, id):
             product.price = request.POST.get('price', product.price)
             product.description = request.POST.get('description', product.description)
             product.category = request.POST.get('category', product.category)
-            
-            if request.FILES.get('image'):
-                product.image = request.FILES.get('image')
-            if request.FILES.get('second_image'):
-                product.second_image = request.FILES.get('second_image')
+            product.thumbnail = request.POST.get('thumbnail', product.thumbnail)
+            product.second_image = request.POST.get('second_image', product.second_image)
+            product.is_featured = request.POST.get('is_featured') == 'on'
             
             product.save()
             

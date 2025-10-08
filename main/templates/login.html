@@ -75,14 +75,19 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         const data = await response.json();
         
         if (data.status === 'success') {
-            window.location.href = "{% url 'main:show_main' %}";
+            showToast('Login successful!', 'success');
+            setTimeout(() => {
+                window.location.href = "{% url 'main:show_main' %}";
+            }, 1500);
         } else {
             errorDiv.textContent = data.message || 'Login failed';
             errorDiv.classList.remove('hidden');
+            showToast(data.message || 'Login failed', 'error');
         }
     } catch (error) {
         errorDiv.textContent = 'An error occurred. Please try again.';
         errorDiv.classList.remove('hidden');
+        showToast('An error occurred. Please try again.', 'error');
     } finally {
         if (!errorDiv.classList.contains('hidden')) {
             submitBtn.disabled = false;

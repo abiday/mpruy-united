@@ -17,7 +17,7 @@
   </head>
   <body>
     {% block content %}
-    {% include 'auth_modals.html' %}
+    {% include 'modal.html' %}
 
     <script>
         const AUTH_URLS = {
@@ -52,13 +52,18 @@
                 const data = await response.json();
                 
                 if (data.status === 'success') {
-                    bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
-                    window.location.reload();
+                    document.getElementById('loginModal').classList.add('hidden');
+                    showToast('Login successful!', 'success');
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
                 } else {
                     showAuthError('login', data.message);
+                    showToast(data.message || 'Login failed', 'error');
                 }
             } catch (error) {
                 showAuthError('login', 'An error occurred. Please try again.');
+                showToast('An error occurred. Please try again.', 'error');
             }
         });
 
@@ -77,13 +82,18 @@
                 const data = await response.json();
                 
                 if (data.status === 'success') {
-                    bootstrap.Modal.getInstance(document.getElementById('registerModal')).hide();
-                    window.location.reload();
+                    document.getElementById('registerModal').classList.add('hidden');
+                    showToast('Registration successful!', 'success');
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
                 } else {
                     showAuthError('register', data.message);
+                    showToast(data.message || 'Registration failed', 'error');
                 }
             } catch (error) {
                 showAuthError('register', 'An error occurred. Please try again.');
+                showToast('An error occurred. Please try again.', 'error');
             }
         });
 
@@ -96,7 +106,10 @@
                 const data = await response.json();
                 
                 if (data.status === 'success') {
-                    window.location.href = '/';
+                    showToast('Logout successful!', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 1500);
                 }
             } catch (error) {
                 console.error('Logout failed:', error);
@@ -104,6 +117,14 @@
         }
 
         document.querySelector('[data-action="logout"]')?.addEventListener('click', handleLogout);
+
+        function showLoginModal() {
+            document.getElementById('loginModal').classList.remove('hidden');
+        }
+
+        function showRegisterModal() {
+            document.getElementById('registerModal').classList.remove('hidden');
+        }
     </script>
     {% endblock content %}
     {% include 'toast.html' %}

@@ -497,3 +497,25 @@ Pada sisi desain, saya memilih Tailwind CSS karena filosofi utility-first-nya ka
 
 Membuat desain yang adaptif untuk berbagai perangkat pun terasa lebih intuitif dengan prefix responsifnya:
 Keunggulan utamanya adalah kecepatan: Tailwind memastikan file CSS akhir sangat kecil karena hanya menyertakan style yang digunakan. Hasilnya adalah website yang memuat lebih cepat dan memberikan pengalaman pengguna yang lebih baik.
+
+
+### Tugas 6
+### Apa perbedaan antara synchronous request dan asynchronous request?
+
+Permintaan **sinkronus (synchronous)** beroperasi dengan model *blocking*. Ketika klien mengirimkan permintaan, eksekusi kode akan berhenti dan antarmuka pengguna (UI) menjadi tidak responsif sampai server memberikan jawaban penuh. Sebaliknya, permintaan **asinkronus (asynchronous)** bersifat *non-blocking*. Permintaan dikirim di latar belakang, sehingga pengguna dapat terus berinteraksi dengan aplikasi. Ketika respons dari server tiba, sebuah fungsi *callback* atau *promise* akan dieksekusi untuk memproses data dan memperbarui UI tanpa menginterupsi alur kerja pengguna.
+
+### Bagaimana AJAX bekerja di Django (alur request–response)?
+
+Alur kerja AJAX di Django dimulai dari sebuah *event* di sisi klien, seperti klik tombol. Sebuah fungsi JavaScript kemudian dieksekusi untuk mengirimkan permintaan (`fetch request`) ke sebuah URL spesifik yang telah terdaftar di `urls.py` Django. URL tersebut diarahkan ke sebuah *view* yang dirancang khusus untuk menangani permintaan AJAX. Di dalam *view* tersebut, Django memproses logika yang diperlukan, seperti mengakses basis data, dan kemudian mengembalikan data dalam format JSON menggunakan `JsonResponse`. Data JSON ini diterima kembali oleh JavaScript di sisi klien, yang selanjutnya akan memanipulasi *Document Object Model* (DOM) untuk memperbarui bagian antarmuka yang relevan secara dinamis tanpa me-reload halaman.
+
+### Apa keuntungan menggunakan AJAX dibandingkan render biasa di Django?
+
+Keuntungan utama menggunakan AJAX adalah peningkatan performa dan pengalaman pengguna secara signifikan. Dengan hanya mentransfer data yang relevan (umumnya dalam format ringan seperti JSON) dan bukan seluruh halaman HTML, AJAX mengurangi beban server dan latensi jaringan. Hal ini memungkinkan pembaruan antarmuka yang lebih cepat karena hanya komponen spesifik dari halaman yang perlu di-render ulang. Hasilnya, aplikasi terasa lebih responsif dan lancar, memberikan pengalaman yang mendekati aplikasi desktop dengan menghilangkan proses *full-page reload* yang mengganggu.
+
+### Bagaimana cara memastikan keamanan saat menggunakan AJAX untuk fitur Login dan Register di Django?
+
+Untuk mengamankan fitur otentikasi berbasis AJAX di Django, penerapan prinsip keamanan fundamental tetap menjadi prioritas. Langkah krusial adalah memastikan proteksi terhadap *Cross-Site Request Forgery* (CSRF) tetap aktif, di mana setiap permintaan `POST` yang dikirim oleh JavaScript harus menyertakan CSRF Token di dalam *headers*. Selain itu, seluruh logika validasi dan otentikasi—seperti verifikasi kredensial, pemeriksaan kekuatan kata sandi, dan keunikan nama pengguna—wajib dieksekusi secara eksklusif di sisi server, yaitu di dalam *view* Django. Validasi di sisi klien hanya boleh dianggap sebagai peningkat UX, bukan sebagai lapisan keamanan.
+
+### Bagaimana AJAX mempengaruhi pengalaman pengguna (User Experience) pada website?
+
+AJAX secara fundamental meningkatkan pengalaman pengguna dengan memungkinkan pembuatan aplikasi web yang sangat interaktif dan dinamis. Fitur ini memfasilitasi pembaruan sebagian halaman (*partial-page updates*) secara mulus, sehingga pengguna dapat melakukan aksi seperti mengirim form atau memfilter data dan melihat hasilnya secara langsung tanpa interupsi dari proses *full-page reload*. Interaksi yang instan ini mengurangi latensi yang dirasakan (*perceived latency*) dan beban kognitif pengguna. Alur kerja yang dihasilkan menjadi lebih lancar dan berkelanjutan, yang pada akhirnya meningkatkan keterlibatan dan kepuasan pengguna karena aplikasi terasa lebih efisien dan responsif.

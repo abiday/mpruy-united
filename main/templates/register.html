@@ -74,15 +74,20 @@ document.getElementById('registerForm').addEventListener('submit', async functio
         const data = await response.json();
         
         if (data.status === 'success') {
-            window.location.href = "{% url 'main:show_main' %}";
+            showToast('Registration successful!', 'success');
+            setTimeout(() => {
+                window.location.href = "{% url 'main:show_main' %}";
+            }, 1500);
         } else {
             errorDiv.textContent = data.message || 'Registration failed';
             errorDiv.classList.remove('hidden');
+            showToast(data.message || 'Registration failed', 'error');
         }
     } catch (error) {
         console.error('Error:', error);
         errorDiv.textContent = 'An error occurred. Please try again.';
         errorDiv.classList.remove('hidden');
+        showToast('An error occurred. Please try again.', 'error');
     } finally {
         if (!errorDiv.classList.contains('hidden')) {
             submitBtn.disabled = false;

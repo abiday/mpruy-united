@@ -1,46 +1,69 @@
-<div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="productModalLabel">Add New Product</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form id="productForm" enctype="multipart/form-data">
-                <div class="modal-body">
-                    <input type="hidden" id="productId" name="productId"> <div class="mb-3">
-                        <label for="name" class="form-label">Name</label>
-                        <input type="text" class="form-control" id="name" name="name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="price" class="form-label">Price</label>
-                        <input type="number" class="form-control" id="price" name="price" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="description" class="form-label">Description</label>
-                        <textarea class="form-control" id="description" name="description" required></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="category" class="form-label">Category</label>
-                        <select class="form-control" id="category" name="category" required>
-                            <option value="Jersey">Jersey</option>
-                            <option value="Boots">Boots</option>
-                            <option value="Equipment">Equipment</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="image" class="form-label">Image</label>
-                        <input type="file" class="form-control" id="image" name="image">
-                    </div>
-                    <div class="mb-3">
-                        <label for="second_image" class="form-label">Second Image</label>
-                        <input type="file" class="form-control" id="second_image" name="second_image">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save</button>
-                </div>
-            </form>
+<!-- Login Modal -->
+<div id="loginModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+  <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity"></div>
+  <div class="flex min-h-full items-center justify-center p-4">
+    <div class="relative w-full max-w-md bg-white rounded-xl shadow-xl">
+      <div class="flex items-center justify-between p-4 border-b border-gray-200">
+        <h3 class="text-xl font-semibold text-gray-900">Login</h3>
+        <button onclick="document.getElementById('loginModal').classList.add('hidden')" class="text-gray-400 hover:text-gray-600">
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <form id="loginForm" class="p-4">
+        {% csrf_token %}
+        <div class="space-y-4">
+          <div>
+            <label for="loginUsername" class="block text-sm font-medium text-gray-700">Username</label>
+            <input type="text" id="loginUsername" name="username" required class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2">
+          </div>
+          <div>
+            <label for="loginPassword" class="block text-sm font-medium text-gray-700">Password</label>
+            <input type="password" id="loginPassword" name="password" required class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2">
+          </div>
+          <div id="loginError" class="hidden text-red-600 text-sm"></div>
         </div>
+        <div class="mt-6 flex justify-end space-x-3">
+          <button type="button" onclick="document.getElementById('loginModal').classList.add('hidden')" class="px-4 py-2 rounded-md text-gray-700 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 transition-colors">Cancel</button>
+          <button type="submit" class="px-4 py-2 rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors">Login</button>
+        </div>
+      </form>
     </div>
+  </div>
+</div>
+
+<!-- Register Modal -->
+<div id="registerModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+  <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity"></div>
+  <div class="flex min-h-full items-center justify-center p-4">
+    <div class="relative w-full max-w-md bg-white rounded-xl shadow-xl">
+      <div class="flex items-center justify-between p-4 border-b border-gray-200">
+        <h3 class="text-xl font-semibold text-gray-900">Register</h3>
+        <button onclick="document.getElementById('registerModal').classList.add('hidden')" class="text-gray-400 hover:text-gray-600">
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <form id="registerForm" class="p-4">
+        {% csrf_token %}
+        <div class="space-y-4">
+          <div>
+            <label for="registerUsername" class="block text-sm font-medium text-gray-700">Username</label>
+            <input type="text" id="registerUsername" name="username" required class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2">
+          </div>
+          <div>
+            <label for="registerPassword" class="block text-sm font-medium text-gray-700">Password</label>
+            <input type="password" id="registerPassword" name="password" required class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2">
+          </div>
+          <div id="registerError" class="hidden text-red-600 text-sm"></div>
+        </div>
+        <div class="mt-6 flex justify-end space-x-3">
+          <button type="button" onclick="document.getElementById('registerModal').classList.add('hidden')" class="px-4 py-2 rounded-md text-gray-700 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 transition-colors">Cancel</button>
+          <button type="submit" class="px-4 py-2 rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors">Register</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
