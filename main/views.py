@@ -14,6 +14,10 @@ from django.views.decorators.http import require_POST, require_http_methods
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.core.serializers import serialize
+import json
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from main.models import Shop
 
 @login_required(login_url='/login')
 def show_main(request):
@@ -65,7 +69,19 @@ def show_xml(request):
      return HttpResponse(xml_data, content_type="application/xml")
 
 def show_json(request):
-    shop_list = Shop.objects.all()
+    # Mengambil parameter 'filter' dari URL (default ke 'all' jika tidak ada)
+    filter_type = request.GET.get("filter", "all")
+
+    if filter_type == "all":
+        shop_list = Shop.objects.all()
+    else:
+        # Jika filter bukan 'all' (misal: 'user'), ambil produk user yang login
+        # Pastikan user sudah login, jika tidak kembalikan list kosong
+        if request.user.is_authenticated:
+            shop_list = Shop.objects.filter(user=request.user)
+        else:
+            shop_list = Shop.objects.none()
+
     json_data = serializers.serialize("json", shop_list)
     return HttpResponse(json_data, content_type="application/json")
 
@@ -367,9 +383,44 @@ def register_ajax(request):
     return render(request, 'register.html')
 
 @csrf_exempt
+@login_required
 def logout_ajax(request):
     logout(request)
     return JsonResponse({
         'status': 'success',
         'message': 'Successfully logged out!'
     })
+
+@csrf_exempt
+def create_product_flutter(request):
+    if request.method == 'POST':
+        try:
+            # 1. Load data dari body request (JSON)
+            data = json.loads(request.body)
+
+            # 2. Buat object Shop baru
+            # Perhatikan: kita menggunakan data["key"] karena ini dictionary python dari JSON
+            new_product = Shop.objects.create(
+                user=request.user,
+                name=data["name"],
+                price=int(data["price"]),
+                description=data["description"],
+                category=data["category"],
+                
+                # Field tambahan sesuai models.py Anda
+                thumbnail=data["thumbnail"], 
+                second_image=data.get("second_image", ""), # Optional, pakai .get()
+                is_featured=data["is_featured"],  # Menerima boolean true/false
+            )
+
+            # 3. Simpan ke database
+            new_product.save()
+
+            return JsonResponse({"status": "success"}, status=200)
+        
+        except Exception as e:
+            # Print error ke terminal untuk debugging
+            print(f"Error Create Product Flutter: {e}") 
+            return JsonResponse({"status": "error", "message": str(e)}, status=500)
+
+    return JsonResponse({"status": "error", "message": "Invalid method"}, status=401)
